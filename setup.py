@@ -33,10 +33,15 @@ req_files = {
     "test": "reqs/test.in",
 }
 
+def parse_requirements(filename):
+    """ load requirements from a pip requirements file """
+    lineiter = (line.strip() for line in open(filename))
+    return [line for line in lineiter if line and not line.startswith("#")]
+
 requirements = {}
 for req, req_file in req_files.items():
-    reqs = parse_requirements(req_file, session="fake")
-    requirements[req] = [str(req.req) for req in reqs]
+    reqs = parse_requirements(req_file)
+    requirements[req] = [str(req) for req in reqs]
 
 setup(
     name="django_microsoft_auth",
@@ -53,7 +58,6 @@ setup(
     url="https://github.com/AngellusMortis/django_microsoft_auth",
     packages=find_packages(include=["microsoft_auth", "microsoft_auth.*"]),
     include_package_data=True,
-    install_requires=requirements["requirements"],
     license="MIT license",
     zip_safe=False,
     keywords="django_microsoft_auth",
@@ -72,11 +76,5 @@ setup(
         "Framework :: Django :: 2.1",
     ],
     test_suite="tests",
-    tests_require=requirements["test"],
-    setup_requires=requirements["setup"],
-    extras_require={
-        "dev": requirements["dev"],
-        "ql": requirements["ql"],
-        "test": requirements["test"],
-    },
+    extras_require={},
 )
