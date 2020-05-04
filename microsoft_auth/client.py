@@ -100,6 +100,9 @@ class MicrosoftClient(OAuth2Session):
     def jwks(self):
         jwks = cache.get(CACHE_KEY_JWKS, [])
 
+        if jwks is None:
+            jwks = []
+            
         if len(jwks) == 0:
             jwks_uri = self.openid_config["jwks_uri"]
             if jwks_uri is None:
